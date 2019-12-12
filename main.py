@@ -9,17 +9,17 @@ from chanel import BSC
 
 
 if __name__ == '__main__':
-    K = 200
-    N = 512
+    K = 16
+    N = 32
     M = int(np.log2(N))
     P = 0.11
-    path = "sort_I_" + str(M) + "_" + str(P) + "_" + "20" + ".dat"
+    path = "./sort_I/sort_I_" + str(M) + "_" + str(P) + "_" + "20" + ".dat"
     #path ="./polarcode/"+"sort_I_" + str(M) + "_" + str(P) + "_" + "20" + ".dat"
 
     if len(sys.argv) == 2:
         # 相互情報量を計算する場合は 'c' オプションをつける
         if sys.argv[1] == "c":
-            check_call(["./calIdmcDp.exe", str(M), str(P), "20"])
+            check_call(["./sort_I/calIdmcDp.exe", str(M), str(P), "20"])
 
         if sys.argv[1] == "ber":
             eroorcount = 0
@@ -38,7 +38,7 @@ if __name__ == '__main__':
                 output = bsc011.Transmission(N, codeword.codeword)
 
                 estimatedcodeword = CodeWorde(N)
-                estimatedcodeword.DecodeOutput(K, N, output, path)
+                estimatedcodeword.DecodeOutput(P, K, N, output, path)
 
                 estimatedmessage = estimatedcodeword.DecodeMessage(K, path)
 
@@ -66,12 +66,12 @@ if __name__ == '__main__':
         codeword.MakeCodeworde(K, message.message, path)
         print("符号語:\t\t\t", codeword.codeword)
 
-        bsc011 = BSC(0.11)
+        bsc011 = BSC(P)
         output = bsc011.Transmission(N, codeword.codeword)
         print("通信路出力:\t\t", output)
 
         estimatedcodeword = CodeWorde(N)
-        estimatedcodeword.DecodeOutput(K, N, output, path)
+        estimatedcodeword.DecodeOutput(P, K, N, output, path)
         print("メッセージもどき推定値:\t", estimatedcodeword.codeword)
 
         estimatedmessage = estimatedcodeword.DecodeMessage(K, path)

@@ -90,9 +90,10 @@ class CodeWorde:
         self.codeword = self.codeword.A1
         #arrayで返す
 
-    def DecodeOutput(self, K, N, chaneloutput,path):
+    def DecodeOutput(self, P, K, N, chaneloutput,path):
         """
         符号語推定値を通信路出力から推定する
+        P: BSCの誤り確率
         K: メッセージ長
         N: 符号長
         chaneloutput: 通信路出力
@@ -104,7 +105,7 @@ class CodeWorde:
         j = 0
         for i in range(N):
             if i == informationindex[j]:
-                hat_ui = self.EstimateCodeword_ibit(N, chaneloutput, i, estimatedcodeword, LRmatrix)
+                hat_ui = self.EstimateCodeword_ibit(P, N, chaneloutput, i, estimatedcodeword, LRmatrix)
                 j += 1
             else:
                 hat_ui = 0
@@ -113,11 +114,11 @@ class CodeWorde:
         self.codeword = estimatedcodeword
         
 
-    def EstimateCodeword_ibit(self, N, chaneloutput, i, estimatedcodeword, LRmatrix):
+    def EstimateCodeword_ibit(self, P, N, chaneloutput, i, estimatedcodeword, LRmatrix):
         """
         符号語のibit目を求める
         """
-        LR = CalculateLR(N, chaneloutput, i, estimatedcodeword, LRmatrix, 0)
+        LR = CalculateLR(P, N, chaneloutput, i, estimatedcodeword, LRmatrix, 0)
         return 0 if LR >= 1 else 1
 
     def DecodeMessage(self, K ,path):
