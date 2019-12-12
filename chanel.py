@@ -14,6 +14,30 @@ class BSC:
             output = np.insert(output, i, tmp)
         return output
 
+
+class BEC:
+    def __init__(self, e=0.2):
+        self.e = e
+        self.input = np.array([], dtype=np.uint8)
+        self.output = np.array([], dtype=np.uint8)
+
+    def Transmission(self):
+        for i in range(np.size(input)):
+            tmp = input[i] if rand() > self.e else 3
+            self.output = np.insert(self.output, i, tmp)
+
+
+if __name__ == "__main__":
+    N = 16
+    input = np.array([1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0])
+
+    bec = BEC(0.5)
+    bec.input = input
+    bec.Transmission()
+    
+    output = bec.output
+    print(output)
+
 """
 NNN = 12
 message = np.array([1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1])

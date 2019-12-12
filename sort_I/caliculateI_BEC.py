@@ -25,9 +25,13 @@ if __name__ == "__main__":
     print(I_i)
 
     I_i = sorted(I_i.items(), key=lambda I_i:I_i[1])
-    print(I_i)
-
-    path = "./momo.csv"
+    
+    A = [] #情報ビットのインデックス
+    for i in range(N):
+        A.append(I_i[i][0])
+    
+    print(A)
+    path = "./sortI_BEC_"+str(e)+"_"+str(N)+".data"
     with open(path, mode='w') as f :
-        wrtiter = csv.writer(f)
-        wrtiter.writerows(I_i)
+        for num in A:
+            f.write(str(num)+' ')
