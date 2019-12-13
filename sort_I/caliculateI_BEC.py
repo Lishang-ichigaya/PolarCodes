@@ -13,7 +13,7 @@ def CaliculateI_BEC(e, N, i):
 
 if __name__ == "__main__":
     e = 0.5
-    N = 16
+    N = 32
     sum = 0
     I_i = {}
     for i in range(N):
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         A.append(I_i[i][0])
     
     print(A)
-    path = "./sortI_BEC_"+str(e)+"_"+str(N)+".data"
+    path = "./sortI_BEC_"+str(e)+"_"+str(N)+".dat"
     with open(path, mode='w') as f :
         for num in A:
             f.write(str(num)+' ')

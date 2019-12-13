@@ -23,7 +23,7 @@ class BEC:
 
     def Transmission(self):
         for i in range(np.size(self.input)):
-            tmp = input[i] if rand() > self.e else 3
+            tmp = self.input[i] if rand() > self.e else 3
             self.output = np.insert(self.output, i, tmp)
 
 

@@ -1,17 +1,19 @@
 import numpy as np
-from CaliculateLR import CalculateLR
+from CaliculateLR import CalculateLR_BSC
+from CaliculateLR import CalculateLR_BEC
 from decimal import Decimal
 from Encoder import GetInformationIndex
 from Encoder import GetGeneratorMatrix
 
 
 class Decoder:
-    def __init__(self, K, N, chaneloutput, path, checker=True):
+    def __init__(self, K, N, chaneloutput, chaneltype, path, checker=True):
         """
         デコーダクラスの初期化
         K:メッセージ長
         N:符号長
         chaneloutput: 0,1の通信路出力
+        chaneltype: 通信路の種類
         path: 相互情報量の小さい順にインデックスを並べたファイルのパス
         checker: メッセージもどきを表示するか否か
         """
@@ -20,13 +22,14 @@ class Decoder:
         self.N = N
         self.hat_message_prime = np.array([])   #推定したメッセージもどきを格納
         self.chaneloutput = chaneloutput
+        self.chaneltype = chaneltype            #通信路の種類を指定
         self.path = path
         self.checker = checker
 
     def DecodeOutput(self, P):
         """
         符号語推定値を通信路出力から推定する
-        P: BSCの誤り確率
+        P: 誤り確率
         """
         estimatedcodeword = np.array([], dtype=np.uint8)
         informationindex = GetInformationIndex(self.K, self.path)
@@ -48,8 +51,14 @@ class Decoder:
         """
         符号語のibit目を求める
         """
-        LR = CalculateLR(P, N, chaneloutput, i, estimatedcodeword, LRmatrix, 0)
-        return 0 if LR >= 1 else 1
+        if self.chaneltype=="BSC":
+            LR = CalculateLR_BSC(P, N, chaneloutput, i, estimatedcodeword, LRmatrix, 0)
+            return 0 if LR >= 1 else 1
+        elif self.chaneltype=="BEC":
+            LR = CalculateLR_BEC(P, N, chaneloutput, i, estimatedcodeword, LRmatrix, 0)
+            return 0 if LR >= 1 else 1
+        else:
+            exit(1)
 
     def DecodeMessage(self, P):
         """
@@ -82,7 +91,7 @@ if __name__ == "__main__":
     chaneloutput = np.array([0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1,
                              1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1])
 
-    decoder0 = Decoder(K, N, chaneloutput, path)
+    decoder0 = Decoder(K, N, chaneloutput, "BSC", path)
     #decoder0.DecodeOutput(0.11)
     decoder0.DecodeMessage(0.11)
 

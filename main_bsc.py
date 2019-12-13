@@ -11,9 +11,10 @@ from Decoder import Decoder
 
 
 if __name__ == '__main__':
-    K = 256
-    N = 512
+    K = 16
+    N = 32
     M = int(np.log2(N))
+    chaneltype = "BSC"
     P = 0.11
     path = "./sort_I/sort_I_" + str(M) + "_" + str(P) + "_" + "20" + ".dat"
     # path ="./polarcode/"+"sort_I_" + str(M) + "_" + str(P) + "_" + "20" + ".dat"
@@ -75,7 +76,7 @@ if __name__ == '__main__':
         print("通信路出力:\t\t", output)
 
 
-        decoder0 = Decoder(K, N ,output, path)
+        decoder0 = Decoder(K, N ,output, chaneltype, path)
         decoder0.DecodeMessage(P)
         #↑復号
         hat_message = Message(K)
