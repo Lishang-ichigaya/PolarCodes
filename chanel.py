@@ -3,26 +3,26 @@ from numpy.random import rand
 
 
 class BSC:
-    def __init__(self, P=0.11):
+    def __init__(self, P):
         self.P = P
+        self.input = np.array([], dtype=np.uint8)
+        self.output = np.array([], dtype=np.uint8)
 
-    def Transmission(self, N, input):
-        output = np.array([], dtype=np.uint8)
-        for i in range(N):
+    def Transmission(self):
+        for i in range(np.size(self.input)):
             noise = 0 if rand() > self.P else 1
-            tmp = (input[i] + noise) % 2
-            output = np.insert(output, i, tmp)
-        return output
+            tmp = (self.input[i] + noise) % 2
+            self.output = np.insert(self.output, i, tmp)
 
 
 class BEC:
-    def __init__(self, e=0.2):
+    def __init__(self, e):
         self.e = e
         self.input = np.array([], dtype=np.uint8)
         self.output = np.array([], dtype=np.uint8)
 
     def Transmission(self):
-        for i in range(np.size(input)):
+        for i in range(np.size(self.input)):
             tmp = input[i] if rand() > self.e else 3
             self.output = np.insert(self.output, i, tmp)
 
@@ -31,11 +31,12 @@ if __name__ == "__main__":
     N = 16
     input = np.array([1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 0])
 
-    bec = BEC(0.5)
-    bec.input = input
-    bec.Transmission()
+    bsc = BSC(1)
+    bsc.input = input
+    bsc.Transmission()
     
-    output = bec.output
+    output = bsc.output
+    print(input)
     print(output)
 
 """

@@ -4,17 +4,19 @@ import sys
 import time
 
 from message import Message
-from codeword import CodeWorde
+#from codeword import CodeWorde
+from Encoder import Encoder
 from chanel import BSC
+from Decoder import Decoder
 
 
 if __name__ == '__main__':
-    K = 16
-    N = 32
+    K = 256
+    N = 512
     M = int(np.log2(N))
     P = 0.11
     path = "./sort_I/sort_I_" + str(M) + "_" + str(P) + "_" + "20" + ".dat"
-    #path ="./polarcode/"+"sort_I_" + str(M) + "_" + str(P) + "_" + "20" + ".dat"
+    # path ="./polarcode/"+"sort_I_" + str(M) + "_" + str(P) + "_" + "20" + ".dat"
 
     if len(sys.argv) == 2:
         # 相互情報量を計算する場合は 'c' オプションをつける
@@ -24,25 +26,25 @@ if __name__ == '__main__':
         if sys.argv[1] == "ber":
             eroorcount = 0
             frameerrorcout = 0
-            kaisu = 10
+            kaisu = 100
 
             start = time.time()
             for i in range(kaisu):
                 message = Message(K)
                 message.MakeMessage()
 
-                codeword = CodeWorde(N)
-                codeword.MakeCodeworde(K, message.message, path, False)
+                encoder0 = Encoder(K, N, message.message, path, False)
+                encoder0.MakeCodeworde()
+                
+                bsc = BSC(P)
+                bsc.input = encoder0.codeword
+                bsc.Transmission()
+                output = bsc.output
+            
+                decoder0 = Decoder(K, N ,output, path, False)
+                decoder0.DecodeMessage(P)
 
-                bsc011 = BSC(0.11)
-                output = bsc011.Transmission(N, codeword.codeword)
-
-                estimatedcodeword = CodeWorde(N)
-                estimatedcodeword.DecodeOutput(P, K, N, output, path)
-
-                estimatedmessage = estimatedcodeword.DecodeMessage(K, path)
-
-                error = np.bitwise_xor(message.message, estimatedmessage)
+                error = np.bitwise_xor(message.message, decoder0.hat_message)
                 eroorcount += np.count_nonzero(error)
 
                 frameerrorcout += 0 if np.count_nonzero(error) == 0 else 1
@@ -62,20 +64,23 @@ if __name__ == '__main__':
         message.MakeMessage()
         print("メッセージ:\t\t", message.message)
 
-        codeword = CodeWorde(N)
-        codeword.MakeCodeworde(K, message.message, path)
-        print("符号語:\t\t\t", codeword.codeword)
+        encoder0 = Encoder(K, N, message.message, path)
+        encoder0.MakeCodeworde()
+        print("符号語:\t\t\t", encoder0.codeword)
 
-        bsc011 = BSC(P)
-        output = bsc011.Transmission(N, codeword.codeword)
+        bsc = BSC(P)
+        bsc.input = encoder0.codeword
+        bsc.Transmission()
+        output = bsc.output
         print("通信路出力:\t\t", output)
 
-        estimatedcodeword = CodeWorde(N)
-        estimatedcodeword.DecodeOutput(P, K, N, output, path)
-        print("メッセージもどき推定値:\t", estimatedcodeword.codeword)
 
-        estimatedmessage = estimatedcodeword.DecodeMessage(K, path)
-        print("メッセージ推定値:\t", estimatedmessage)
+        decoder0 = Decoder(K, N ,output, path)
+        decoder0.DecodeMessage(P)
+        #↑復号
+        hat_message = Message(K)
+        hat_message.message = decoder0.hat_message
+        print("メッセージ推定値:\t", hat_message.message)
 
-        error = np.bitwise_xor(message.message, estimatedmessage)
+        error = np.bitwise_xor(message.message, hat_message.message)
         print("誤り数:", np.count_nonzero(error))

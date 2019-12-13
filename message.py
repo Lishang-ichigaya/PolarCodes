@@ -21,6 +21,9 @@ class Message:
         for i in range(self.K):
             self.message[i] = 0 if rand() > P else 1
     
+class HatMessage(Message):
+    #メッセージの推定値をを保持するクラス。名前だけ変えた。
+    pass
 
 
 """
