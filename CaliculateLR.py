@@ -92,7 +92,7 @@ def CalculateLR_BEC(e, N, chaneloutput_y, i, estimatedcodeword_u, LRmatrix, bran
         if chaneloutput_y == np.array([0]):
             LR_tmp = Decimal('10000') #正しくは無限大
         elif chaneloutput_y == np.array([1]):
-            LR_tmp = Decimal('0.00001')
+            LR_tmp = Decimal('0.00001') #正しくはゼロ
         elif chaneloutput_y == np.array([3]):
             LR_tmp = Decimal('1')
         else:
